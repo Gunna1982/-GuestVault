@@ -31,6 +31,15 @@ interface PortalData {
   } | null;
   guests: { id: string; first_name: string; last_name: string; email: string; is_primary: boolean }[];
   isCheckedIn: boolean;
+  upsells: {
+    id: string;
+    category: string;
+    name: string;
+    description: string | null;
+    price_cents: number;
+    price_type: string;
+    image_url: string | null;
+  }[];
 }
 
 export default function GuestPortal() {
@@ -265,6 +274,43 @@ export default function GuestPortal() {
               <InfoCard icon={Car} title="Parking" color={brandColor}>
                 <p className="text-sm text-gray-300">{data.property.property_info.parking}</p>
               </InfoCard>
+            )}
+
+            {/* Upsell Storefront */}
+            {data.upsells && data.upsells.length > 0 && (
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: brandColor }}>
+                  Enhance Your Stay
+                </h3>
+                <div className="space-y-3">
+                  {data.upsells.map((upsell) => {
+                    const price = (upsell.price_cents / 100).toFixed(upsell.price_cents % 100 === 0 ? 0 : 2);
+                    const suffix = upsell.price_type === 'per_person' ? '/person' : upsell.price_type === 'per_night' ? '/night' : '';
+                    return (
+                      <div key={upsell.id} className="rounded-xl border border-gray-800 bg-gray-900/50 p-4 hover:border-gray-700 transition-colors">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-white text-sm">{upsell.name}</h4>
+                            {upsell.description && (
+                              <p className="text-xs text-gray-500 mt-1 line-clamp-2">{upsell.description}</p>
+                            )}
+                          </div>
+                          <div className="text-right ml-4 flex-shrink-0">
+                            <p className="text-lg font-bold" style={{ color: brandColor }}>${price}<span className="text-xs text-gray-500">{suffix}</span></p>
+                            <button
+                              className="mt-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                              style={{ background: brandColor, color: '#0a0a12' }}
+                              onClick={() => alert('Stripe checkout coming soon!')}
+                            >
+                              Add
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             )}
 
             {/* Add Travel Companions */}

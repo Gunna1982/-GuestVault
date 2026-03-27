@@ -35,6 +35,28 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
   const primaryGuest = guests?.find(g => g.is_primary);
   const isCheckedIn = !!(primaryGuest?.email);
 
+  // Get available upsells for this property (only after check-in)
+  let upsells: unknown[] = [];
+  if (isCheckedIn && reservation.properties?.id) {
+    const { data: propertyUpsells } = await supabase
+      .from('upsell_templates')
+      .select('*')
+      .eq('organization_id', reservation.organization_id)
+      .eq('is_active', true)
+      .is('deleted_at', null)
+      .order('display_order', { ascending: true });
+
+    upsells = (propertyUpsells || []).map(u => ({
+      id: u.id,
+      category: u.category,
+      name: u.name,
+      description: u.description,
+      price_cents: u.price_cents,
+      price_type: u.price_type,
+      image_url: u.image_url,
+    }));
+  }
+
   return NextResponse.json({
     reservation: {
       id: reservation.id,
@@ -58,5 +80,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
     } : null,
     guests: guests || [],
     isCheckedIn,
+    upsells,
   });
 }
