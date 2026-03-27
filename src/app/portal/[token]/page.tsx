@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { Wifi, Clock, Car, BookOpen, Users, Check, Loader2 } from 'lucide-react';
+import { Wifi, Clock, Car, BookOpen, Users, Check, Loader2, ShoppingBag } from 'lucide-react';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 interface PortalData {
   reservation: {
@@ -57,6 +61,30 @@ export default function GuestPortal() {
   const [consent, setConsent] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
+  const [checkoutUpsell, setCheckoutUpsell] = useState<PortalData['upsells'][0] | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [orderSuccess, setOrderSuccess] = useState<string | null>(null);
+
+  async function startCheckout(upsell: PortalData['upsells'][0]) {
+    setCheckoutUpsell(upsell);
+    try {
+      const res = await fetch(`/api/portal/${token}/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ upsell_id: upsell.id, quantity: 1 }),
+      });
+      const data = await res.json();
+      if (data.clientSecret) {
+        setClientSecret(data.clientSecret);
+      } else {
+        alert(data.error || 'Payment setup failed');
+        setCheckoutUpsell(null);
+      }
+    } catch {
+      alert('Something went wrong');
+      setCheckoutUpsell(null);
+    }
+  }
 
   useEffect(() => {
     async function loadPortal() {
@@ -300,9 +328,9 @@ export default function GuestPortal() {
                             <button
                               className="mt-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
                               style={{ background: brandColor, color: '#0a0a12' }}
-                              onClick={() => alert('Stripe checkout coming soon!')}
+                              onClick={() => startCheckout(upsell)}
                             >
-                              Add
+                              {checkoutUpsell?.id === upsell.id ? 'Processing...' : 'Add'}
                             </button>
                           </div>
                         </div>
@@ -331,11 +359,96 @@ export default function GuestPortal() {
         )}
       </main>
 
+      {/* Stripe Checkout Modal */}
+      {clientSecret && checkoutUpsell && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4">
+          <div className="bg-gray-900 rounded-2xl border border-gray-800 w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-white">{checkoutUpsell.name}</h3>
+              <button onClick={() => { setClientSecret(null); setCheckoutUpsell(null); }} className="text-gray-500 hover:text-white cursor-pointer text-xl">&times;</button>
+            </div>
+            <p className="text-2xl font-bold mb-4" style={{ color: brandColor }}>
+              ${(checkoutUpsell.price_cents / 100).toFixed(checkoutUpsell.price_cents % 100 === 0 ? 0 : 2)}
+            </p>
+            <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'night', variables: { colorPrimary: brandColor } } }}>
+              <CheckoutForm
+                brandColor={brandColor}
+                onSuccess={() => {
+                  setClientSecret(null);
+                  setCheckoutUpsell(null);
+                  setOrderSuccess(checkoutUpsell.name);
+                  setTimeout(() => setOrderSuccess(null), 5000);
+                }}
+              />
+            </Elements>
+          </div>
+        </div>
+      )}
+
+      {/* Order Success Toast */}
+      {orderSuccess && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl bg-green-500/20 border border-green-500/30 text-green-400 text-sm font-medium flex items-center gap-2">
+          <Check size={18} /> {orderSuccess} — confirmed!
+        </div>
+      )}
+
       {/* Footer */}
       <footer className="border-t border-gray-800 py-6 text-center">
         <p className="text-[10px] text-gray-600">Powered by GuestVault</p>
       </footer>
     </div>
+  );
+}
+
+function CheckoutForm({ brandColor, onSuccess }: { brandColor: string; onSuccess: () => void }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setProcessing(true);
+    setError('');
+
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      setError(submitError.message || 'Payment failed');
+      setProcessing(false);
+      return;
+    }
+
+    const { error: confirmError } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: window.location.href,
+      },
+      redirect: 'if_required',
+    });
+
+    if (confirmError) {
+      setError(confirmError.message || 'Payment failed');
+      setProcessing(false);
+    } else {
+      onSuccess();
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <PaymentElement />
+      {error && <p className="text-red-400 text-xs mt-3">{error}</p>}
+      <button
+        type="submit"
+        disabled={!stripe || processing}
+        className="w-full mt-4 py-3 rounded-lg font-semibold text-sm disabled:opacity-50 cursor-pointer"
+        style={{ background: brandColor, color: '#0a0a12' }}
+      >
+        {processing ? 'Processing...' : 'Pay Now'}
+      </button>
+    </form>
   );
 }
 
