@@ -1,0 +1,62 @@
+import { NextResponse } from 'next/server';
+import { createAdminClient } from '@/lib/supabase/admin';
+
+// GET /api/portal/:token — load portal data for a guest (no auth required)
+export async function GET(_req: Request, { params }: { params: Promise<{ token: string }> }) {
+  const { token } = await params;
+  const supabase = createAdminClient();
+
+  // Find reservation by portal token
+  const { data: reservation, error } = await supabase
+    .from('reservations')
+    .select('*, properties(*), organizations(name, slug, brand_config)')
+    .eq('portal_token', token)
+    .single();
+
+  if (error || !reservation) {
+    return NextResponse.json({ error: 'Invalid or expired portal link' }, { status: 404 });
+  }
+
+  // Mark portal as accessed
+  if (!reservation.portal_accessed_at) {
+    await supabase
+      .from('reservations')
+      .update({ portal_accessed_at: new Date().toISOString() })
+      .eq('id', reservation.id);
+  }
+
+  // Get existing guests for this reservation
+  const { data: guests } = await supabase
+    .from('guests')
+    .select('id, first_name, last_name, email, is_primary')
+    .eq('reservation_id', reservation.id);
+
+  // Check if primary guest has checked in (has email)
+  const primaryGuest = guests?.find(g => g.is_primary);
+  const isCheckedIn = !!(primaryGuest?.email);
+
+  return NextResponse.json({
+    reservation: {
+      id: reservation.id,
+      check_in: reservation.check_in,
+      check_out: reservation.check_out,
+      guest_count: reservation.guest_count,
+      status: reservation.status,
+    },
+    property: reservation.properties ? {
+      name: reservation.properties.name,
+      description: reservation.properties.description,
+      // Only reveal sensitive info after check-in
+      property_info: isCheckedIn ? reservation.properties.property_info : {
+        checkout_time: reservation.properties.property_info?.checkout_time,
+      },
+      images: reservation.properties.images,
+    } : null,
+    organization: reservation.organizations ? {
+      name: reservation.organizations.name,
+      brand_config: reservation.organizations.brand_config,
+    } : null,
+    guests: guests || [],
+    isCheckedIn,
+  });
+}
