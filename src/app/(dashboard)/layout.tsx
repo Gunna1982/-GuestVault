@@ -8,14 +8,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   if (!user) redirect('/login');
 
-  // Get the user's organization
   const { data: org } = await supabase
     .from('organizations')
     .select('*')
     .eq('owner_user_id', user.id)
     .single();
 
-  if (!org) redirect('/signup?step=org');
+  if (!org) redirect('/signup');
 
   return <DashboardShell org={org} user={user}>{children}</DashboardShell>;
 }
