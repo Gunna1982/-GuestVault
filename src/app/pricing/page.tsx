@@ -67,7 +67,7 @@ export default function PricingPage() {
       {/* Nav */}
       <nav className="fixed top-0 w-full z-50 border-b border-gray-800/50" style={{ background: 'rgba(9,9,20,0.9)', backdropFilter: 'blur(12px)' }}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-amber-400 tracking-wide">GuestVault</Link>
+          <Link href="/" className="text-xl font-bold text-amber-400 tracking-wide">StaySteward</Link>
           <div className="flex items-center gap-6">
             <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">Home</Link>
             <Link href="/login" className="text-sm text-gray-400 hover:text-white transition-colors">Login</Link>
@@ -188,7 +188,7 @@ export default function PricingPage() {
 
       {/* Footer */}
       <footer className="border-t border-gray-800/50 py-8 px-6 text-center">
-        <p className="text-xs text-gray-700">&copy; 2026 GuestVault. Built by Stelliform Digital.</p>
+        <p className="text-xs text-gray-700">&copy; 2026 StaySteward. Built by Stelliform Digital.</p>
       </footer>
     </div>
   );

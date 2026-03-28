@@ -77,7 +77,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
         quantity: String(quantity),
       },
       receipt_email: guest.email,
-      description: `${upsell.name}${quantity > 1 ? ` x${quantity}` : ''} — ${org?.name || 'GuestVault'}`,
+      description: `${upsell.name}${quantity > 1 ? ` x${quantity}` : ''} — ${org?.name || 'StaySteward'}`,
     };
 
     // If host has Stripe Connect, set up automatic transfer

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════════════
--- GuestVault Core Schema — Migration 001
+-- StaySteward Core Schema — Migration 001
 -- Tables: organizations, properties, reservations, guests
 -- RLS: enabled on all tables, policies enforce org-level isolation
 -- All tables include deleted_at for GDPR soft-delete compliance

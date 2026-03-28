@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════════════
--- GuestVault Schema — Migration 002
+-- StaySteward Schema — Migration 002
 -- Tables: upsell_templates, property_upsells, upsell_orders
 -- RLS: enabled, org-level isolation
 -- ═══════════════════════════════════════════════════════════════════════════════

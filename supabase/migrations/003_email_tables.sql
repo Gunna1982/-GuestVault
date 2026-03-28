@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════════════
--- GuestVault Schema — Migration 003
+-- StaySteward Schema — Migration 003
 -- Tables: email_sequences, email_sequence_steps, email_sends
 -- ═══════════════════════════════════════════════════════════════════════════════
 
