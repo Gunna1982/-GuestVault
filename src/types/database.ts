@@ -17,6 +17,16 @@ export interface BrandConfig {
   welcome_message?: string;
 }
 
+export interface ComplianceConfig {
+  require_id_verification: boolean;
+  require_rental_agreement: boolean;
+  require_emergency_contact: boolean;
+  gdpr_mode: boolean;
+  default_house_rules: string;
+  physical_mailing_address: string;
+  compliance_message_template: string;
+}
+
 export interface PropertyInfo {
   wifi_name?: string;
   wifi_pass?: string;
@@ -55,6 +65,7 @@ export interface Organization {
   stripe_account_id: string | null;
   custom_domain: string | null;
   brand_config: BrandConfig;
+  compliance_config: ComplianceConfig;
   settings: Record<string, unknown>;
   created_at: string;
   updated_at: string;
@@ -95,6 +106,8 @@ export interface Reservation {
   updated_at: string;
 }
 
+export type IdDocumentType = 'drivers_license' | 'passport' | 'national_id' | 'other';
+
 export interface Guest {
   id: string;
   organization_id: string;
@@ -102,14 +115,57 @@ export interface Guest {
   email: string | null;
   email_verified: boolean;
   phone: string | null;
+  emergency_phone: string | null;
   first_name: string | null;
   last_name: string | null;
   is_primary: boolean;
+  id_verified: boolean;
+  id_verified_at: string | null;
+  id_document_type: IdDocumentType | null;
+  rental_agreement_accepted: boolean;
+  rental_agreement_accepted_at: string | null;
+  rental_agreement_ip: string | null;
   marketing_consent: boolean;
   consent_timestamp: string | null;
   consent_ip: string | null;
+  unsubscribe_token: string | null;
+  checkin_completed_at: string | null;
   source: GuestSource;
   tags: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RentalAgreement {
+  id: string;
+  organization_id: string;
+  property_id: string | null;
+  title: string;
+  body_text: string;
+  version: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AgreementAcceptance {
+  id: string;
+  guest_id: string;
+  rental_agreement_id: string;
+  accepted_at: string;
+  ip_address: string | null;
+  user_agent: string | null;
+}
+
+export interface ComplianceTemplate {
+  id: string;
+  organization_id: string | null;
+  name: string;
+  category: 'checkin_link' | 'pre_arrival' | 'post_checkout' | 'review_request' | 'custom';
+  message_text: string;
+  platform: 'airbnb' | 'vrbo' | 'booking' | 'direct' | 'all';
+  is_system: boolean;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
