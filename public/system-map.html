@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StaySteward — System Architecture Map</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a14; color: #e5e5e5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 40px 20px; }
+  h1 { text-align: center; color: #f59e0b; font-size: 28px; margin-bottom: 8px; }
+  .subtitle { text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 40px; }
+  .legend { display: flex; justify-content: center; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #9ca3af; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+  .dot-built { background: #22c55e; }
+  .dot-needs-setup { background: #f59e0b; }
+  .dot-not-built { background: #ef4444; }
+  .dot-external { background: #8b5cf6; }
+
+  .grid { max-width: 1200px; margin: 0 auto; display: grid; gap: 24px; }
+
+  /* Top section: 3 column flow */
+  .flow-section { display: grid; grid-template-columns: 1fr 60px 1fr 60px 1fr; align-items: start; gap: 0; margin-bottom: 16px; }
+  .flow-arrow { display: flex; align-items: center; justify-content: center; padding-top: 80px; color: #4b5563; font-size: 28px; }
+
+  .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; }
+  .card h2 { font-size: 14px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; }
+  .card h3 { font-size: 16px; color: #f59e0b; margin-bottom: 12px; }
+
+  .item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #1f2937; }
+  .item:last-child { border-bottom: none; }
+  .status { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .status-built { background: #22c55e; }
+  .status-setup { background: #f59e0b; }
+  .status-todo { background: #ef4444; }
+  .status-external { background: #8b5cf6; }
+  .item-text { flex: 1; }
+  .item-name { font-size: 13px; color: #e5e5e5; font-weight: 500; }
+  .item-desc { font-size: 11px; color: #6b7280; margin-top: 2px; }
+  .item-tag { font-size: 10px; padding: 1px 6px; border-radius: 4px; margin-left: 6px; }
+  .tag-built { background: #052e16; color: #4ade80; }
+  .tag-setup { background: #422006; color: #fbbf24; }
+  .tag-todo { background: #450a0a; color: #f87171; }
+
+  .section-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .section-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .full-width { grid-column: 1 / -1; }
+
+  .connector { text-align: center; color: #374151; font-size: 20px; padding: 8px 0; }
+
+  .summary-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 32px; }
+  .summary-card { background: #111827; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; text-align: center; }
+  .summary-num { font-size: 32px; font-weight: 700; }
+  .summary-label { font-size: 11px; color: #6b7280; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+  .num-green { color: #22c55e; }
+  .num-amber { color: #f59e0b; }
+  .num-red { color: #ef4444; }
+  .num-purple { color: #8b5cf6; }
+
+  .phase-timeline { margin-top: 40px; }
+  .phase-timeline h2 { text-align: center; color: #f59e0b; font-size: 20px; margin-bottom: 24px; }
+  .phases { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .phase { background: #111827; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; }
+  .phase-header { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .phase-now { color: #22c55e; }
+  .phase-next { color: #f59e0b; }
+  .phase-growth { color: #3b82f6; }
+  .phase-scale { color: #8b5cf6; }
+  .phase h3 { font-size: 14px; color: #e5e5e5; margin-bottom: 10px; }
+  .phase li { font-size: 11px; color: #9ca3af; margin-bottom: 4px; list-style: none; padding-left: 14px; position: relative; }
+  .phase li::before { content: ''; position: absolute; left: 0; top: 6px; width: 6px; height: 6px; border-radius: 50%; }
+  .phase-now li::before { background: #22c55e; }
+  .phase-next li::before { background: #f59e0b; }
+  .phase-growth li::before { background: #3b82f6; }
+  .phase-scale li::before { background: #8b5cf6; }
+
+  @media (max-width: 900px) {
+    .flow-section { grid-template-columns: 1fr; }
+    .flow-arrow { display: none; }
+    .section-row, .section-row-3 { grid-template-columns: 1fr; }
+    .summary-bar { grid-template-columns: 1fr 1fr; }
+    .phases { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<h1>StaySteward System Architecture</h1>
+<p class="subtitle">Digital Concierge Platform for Short-Term Rental Hosts — Full System Map</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot dot-built"></div> Built & Deployed</div>
+  <div class="legend-item"><div class="legend-dot dot-needs-setup"></div> Built, Needs Config/Migration</div>
+  <div class="legend-item"><div class="legend-dot dot-not-built"></div> Not Built Yet</div>
+  <div class="legend-item"><div class="legend-dot dot-external"></div> External Service</div>
+</div>
+
+<!-- Summary Stats -->
+<div class="summary-bar">
+  <div class="summary-card"><div class="summary-num num-green">42</div><div class="summary-label">Components Built</div></div>
+  <div class="summary-card"><div class="summary-num num-amber">6</div><div class="summary-label">Need Config</div></div>
+  <div class="summary-card"><div class="summary-num num-red">12</div><div class="summary-label">Not Built Yet</div></div>
+  <div class="summary-card"><div class="summary-num num-purple">4</div><div class="summary-label">External Services</div></div>
+</div>
+
+<div class="grid" style="margin-top: 32px;">
+
+<!-- THE GUEST FLOW -->
+<div class="flow-section">
+  <div class="card">
+    <h2>1. Guest Discovery</h2>
+    <h3>How Guests Find the Portal</h3>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Airbnb-Safe Message Templates <span class="item-tag tag-built">BUILT</span></div><div class="item-desc">5 system templates for Airbnb, Booking, VRBO, Direct, Pre-arrival</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Portal Token Generation <span class="item-tag tag-built">BUILT</span></div><div class="item-desc">Unique link per reservation, no app download needed</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Compliance Indicator <span class="item-tag tag-built">BUILT</span></div><div class="item-desc">Dashboard shows if portal is compliant before sending</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">PMS Auto-Send <span class="item-tag tag-todo">TODO</span></div><div class="item-desc">Hostaway/Guesty webhook triggers automatic portal link delivery</div></div></div>
+  </div>
+
+  <div class="flow-arrow">→</div>
+
+  <div class="card">
+    <h2>2. Guest Portal</h2>
+    <h3>Compliance-First Check-In Flow</h3>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Step 1: Digital Check-In <span class="item-tag tag-built">BUILT</span></div><div class="item-desc">Name, email, phone, ID doc type, emergency contact</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Step 2: Rental Agreement <span class="item-tag tag-built">BUILT</span></div><div class="item-desc">Accept terms with IP/timestamp audit trail</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Step 3: WiFi + Property Info <span class="item-tag tag-built">BUILT</span></div><div class="item-desc">The reward — WiFi credentials, checkout time, house rules</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Step 4: Upsell Storefront <span class="item-tag tag-built">BUILT</span></div><div class="item-desc">Visually separated "Enhance Your Stay" section</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">GDPR Consent (default: OFF) <span class="item-tag tag-built">BUILT</span></div><div class="item-desc">Marketing consent checkbox unchecked by default</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">Branded Boarding Pass UI <span class="item-tag tag-todo">TODO</span></div><div class="item-desc">Beautiful post-checkin summary card guests want to screenshot</div></div></div>
+  </div>
+
+  <div class="flow-arrow">→</div>
+
+  <div class="card">
+    <h2>3. Revenue Engine</h2>
+    <h3>Monetization After Check-In</h3>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Stripe Checkout <span class="item-tag tag-built">BUILT</span></div><div class="item-desc">PaymentIntent with platform fee split</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Upsell Templates (8 categories) <span class="item-tag tag-built">BUILT</span></div><div class="item-desc">Late checkout, transport, grocery, chef, experiences, etc.</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Email Sequences <span class="item-tag tag-built">BUILT</span></div><div class="item-desc">Post-stay, 30/60/90-day win-back, anniversary</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">Early/Late Check-In Manager <span class="item-tag tag-todo">TODO</span></div><div class="item-desc">$25-$100 automated fee per instance</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">Direct Re-Booking Engine <span class="item-tag tag-todo">TODO</span></div><div class="item-desc">Skip OTA fees on return bookings</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">Gap-Night Filler <span class="item-tag tag-todo">TODO</span></div><div class="item-desc">Discount offers for unbookable 1-2 night gaps</div></div></div>
+  </div>
+</div>
+
+<div class="connector">▼ &nbsp; Data flows into host dashboard &nbsp; ▼</div>
+
+<!-- HOST DASHBOARD -->
+<div class="card full-width">
+  <h2>Host Dashboard — 10 Pages Built</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 8px;">
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Dashboard Overview</div><div class="item-desc">KPIs, quick stats</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Properties</div><div class="item-desc">CRUD, WiFi, rules</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Reservations</div><div class="item-desc">Portal links, status</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Upsells</div><div class="item-desc">Templates, pricing</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Orders</div><div class="item-desc">Revenue tracking</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Marketing</div><div class="item-desc">Sequences, performance</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Analytics</div><div class="item-desc">Capture rate, revenue</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Branding</div><div class="item-desc">Colors, logo, preview</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Settings</div><div class="item-desc">Compliance status</div></div></div>
+    <div class="item"><div class="status status-setup"></div><div class="item-text"><div class="item-name">Lead Pipeline</div><div class="item-desc">704 FL prospects (needs migration)</div></div></div>
+  </div>
+</div>
+
+<!-- BACKEND INFRASTRUCTURE -->
+<div class="section-row">
+  <div class="card">
+    <h2>Backend — 16 API Routes</h2>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Properties API</div><div class="item-desc">GET, POST, PATCH, DELETE</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Reservations API</div><div class="item-desc">GET, POST + portal token gen</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Portal API</div><div class="item-desc">GET data, POST check-in, PATCH agreement, POST order</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Upsell & Orders API</div><div class="item-desc">Templates + Stripe PaymentIntent creation</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Sequences API</div><div class="item-desc">5 starter sequences, CRUD</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Analytics API</div><div class="item-desc">Overview metrics</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Compliance API</div><div class="item-desc">Templates, unsubscribe endpoint</div></div></div>
+    <div class="item"><div class="status status-setup"></div><div class="item-text"><div class="item-name">Leads API</div><div class="item-desc">CRUD + bulk import (needs migration)</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">Stripe Webhooks</div><div class="item-desc">Payment confirmation, refunds, disputes</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">Resend Email Sender</div><div class="item-desc">Actually send the email sequences via Resend</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">Cron: Email Scheduler</div><div class="item-desc">Trigger sequences at correct delay intervals</div></div></div>
+  </div>
+
+  <div class="card">
+    <h2>Database — 5 Migrations</h2>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">001: Core Tables</div><div class="item-desc">organizations, properties, reservations, guests</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">002: Upsell Tables</div><div class="item-desc">upsell_templates, property_upsells, upsell_orders</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">003: Email Tables</div><div class="item-desc">email_sequences, email_sequence_steps, email_sends</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">004: Compliance Tables</div><div class="item-desc">rental_agreements, agreement_acceptances, compliance_templates</div></div></div>
+    <div class="item"><div class="status status-setup"></div><div class="item-text"><div class="item-name">005: Leads Tables</div><div class="item-desc">leads, lead_activities — NOT YET RUN IN SUPABASE</div></div></div>
+    <div class="item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #374151;">
+      <div class="status status-built"></div><div class="item-text"><div class="item-name">RLS (Row Level Security)</div><div class="item-desc">All tables org-isolated, multi-tenant safe</div></div>
+    </div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Soft Delete (GDPR)</div><div class="item-desc">deleted_at on all sensitive tables</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Audit Trail</div><div class="item-desc">Agreement acceptances with IP/user agent/timestamp</div></div></div>
+  </div>
+</div>
+
+<!-- EXTERNAL SERVICES + PUBLIC PAGES -->
+<div class="section-row">
+  <div class="card">
+    <h2>External Services</h2>
+    <div class="item"><div class="status status-external"></div><div class="item-text"><div class="item-name">Supabase <span class="item-tag tag-built">CONNECTED</span></div><div class="item-desc">PostgreSQL + Auth + RLS — Live & working</div></div></div>
+    <div class="item"><div class="status status-external"></div><div class="item-text"><div class="item-name">Vercel <span class="item-tag tag-built">CONNECTED</span></div><div class="item-desc">Auto-deploy on push to main — guest-vault.vercel.app</div></div></div>
+    <div class="item"><div class="status status-setup"></div><div class="item-text"><div class="item-name">Stripe Connect <span class="item-tag tag-setup">NEEDS SETUP</span></div><div class="item-desc">Code built, need live Stripe keys + onboarding flow</div></div></div>
+    <div class="item"><div class="status status-setup"></div><div class="item-text"><div class="item-name">Resend <span class="item-tag tag-setup">NEEDS SETUP</span></div><div class="item-desc">API key needed + sender domain verification</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">Custom Domain <span class="item-tag tag-todo">TODO</span></div><div class="item-desc">staysteward.com → Vercel (need to purchase & configure)</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">Hostaway PMS <span class="item-tag tag-todo">TODO</span></div><div class="item-desc">API integration for auto-import reservations</div></div></div>
+  </div>
+
+  <div class="card">
+    <h2>Public Pages & Legal</h2>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Marketing Homepage</div><div class="item-desc">Hero, problem, how it works, CTA</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Pricing Page</div><div class="item-desc">3 tiers: Free / Growth $49 / Pro $149</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Login / Signup</div><div class="item-desc">Email/password auth, 2-step org creation</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Privacy Policy</div><div class="item-desc">GDPR/Greece compliant, 10 sections</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Terms of Service</div><div class="item-desc">CAN-SPAM compliant, 9 sections</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Unsubscribe Page</div><div class="item-desc">One-click unsubscribe (RFC 8058)</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">Compliance One-Pager (PDF)</div><div class="item-desc">Sales deliverable for host onboarding</div></div></div>
+  </div>
+</div>
+
+<!-- YOUR INTERNAL TOOLS -->
+<div class="card full-width">
+  <h2>Your Internal Tools (Not Customer-Facing)</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
+    <div class="item"><div class="status status-setup"></div><div class="item-text"><div class="item-name">Lead Pipeline CRM <span class="item-tag tag-setup">NEEDS MIGRATION</span></div><div class="item-desc">704 FL vacation rental operators, search, filter, status tracking</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Deploy Script (deploy.ps1)</div><div class="item-desc">One-command: migrate → commit → push → server sync</div></div></div>
+    <div class="item"><div class="status status-setup"></div><div class="item-text"><div class="item-name">Deploy Alias</div><div class="item-desc">Need to add `deploy` function to PowerShell $PROFILE</div></div></div>
+    <div class="item"><div class="status status-built"></div><div class="item-text"><div class="item-name">Seed Scripts</div><div class="item-desc">704 leads JSON + database seeder (tsx)</div></div></div>
+    <div class="item"><div class="status status-todo"></div><div class="item-text"><div class="item-name">Florida Marketing Site</div><div class="item-desc">Beach-themed landing page for FL market outreach</div></div></div>
+  </div>
+</div>
+
+</div>
+
+<!-- PHASE TIMELINE -->
+<div class="phase-timeline" style="max-width: 1200px; margin: 0 auto;">
+  <h2>Implementation Roadmap</h2>
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-header phase-now">NOW — Do Today</div>
+      <h3>Get Live</h3>
+      <ul>
+        <li>Run leads migration (005)</li>
+        <li>Seed 704 leads</li>
+        <li>Set up deploy alias</li>
+        <li>Configure Stripe live keys</li>
+        <li>Configure Resend + verify domain</li>
+        <li>Purchase staysteward.com</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-header phase-next">NEXT — Weeks 1-4</div>
+      <h3>Revenue Ready</h3>
+      <ul>
+        <li>Stripe webhooks (confirm payments)</li>
+        <li>Email sending via Resend</li>
+        <li>Email scheduler cron job</li>
+        <li>Branded Boarding Pass UI</li>
+        <li>Early/Late check-in manager</li>
+        <li>Compliance one-pager PDF</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-header phase-growth">GROWTH — Weeks 5-12</div>
+      <h3>Scale Features</h3>
+      <ul>
+        <li>Hostaway PMS integration</li>
+        <li>Direct re-booking engine</li>
+        <li>Gap-night filler</li>
+        <li>Biometric ID verification</li>
+        <li>Dynamic property guidebook</li>
+        <li>Affiliate storefront</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-header phase-scale">SCALE — Months 4-6</div>
+      <h3>Market Dominance</h3>
+      <ul>
+        <li>Guesty + more PMS integrations</li>
+        <li>Service provider marketplace</li>
+        <li>AI-driven guest engagement</li>
+        <li>Smart access integration</li>
+        <li>Review & social engine</li>
+        <li>White-label option</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div style="text-align: center; margin-top: 40px; color: #374151; font-size: 11px;">
+  StaySteward by Stelliform Digital — System Architecture v1.0 — March 2026
+</div>
+
+</body>
+</html>
