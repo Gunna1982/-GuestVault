@@ -125,7 +125,7 @@ export default function LeadsPage() {
             Export JSON
           </Button>
           <Dialog>
-            <DialogTrigger asChild>
+            <DialogTrigger>
               <Button className="bg-amber-600 hover:bg-amber-700 text-black font-semibold">
                 + Import Leads
               </Button>
