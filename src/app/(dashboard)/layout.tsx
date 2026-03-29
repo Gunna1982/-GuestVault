@@ -16,5 +16,5 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   if (!org) redirect('/signup');
 
-  return <DashboardShell org={org} user={user}>{children}</DashboardShell>;
+  return <div className="min-h-screen bg-gray-950 text-gray-100"><DashboardShell org={org} user={user}>{children}</DashboardShell></div>;
 }
