@@ -205,8 +205,8 @@ export async function POST(request: NextRequest) {
 
     try {
       const templateContent = await getTemplateContent(template, {
-        name: lead.name || 'there',
-        property_name: lead.property_name,
+        name: lead.contact_person || lead.licensee_name || 'there',
+        property_name: lead.brand_name || lead.company_name,
       });
       emailSubject = subject || templateContent.subject;
       emailBody = custom_message || templateContent.body;
@@ -233,9 +233,12 @@ export async function POST(request: NextRequest) {
       date_last_contacted: now,
     };
 
-    // Only set status to 'contacted' if it hasn't been contacted before
-    if (lead.status !== 'contacted' && lead.status !== 'qualified' && lead.status !== 'lost') {
-      updateData.status = 'contacted';
+    // Only set status to 'contacted' if it hasn't progressed further
+    if (lead.outreach_status === 'not_contacted' || lead.outreach_status === 'researching') {
+      updateData.outreach_status = 'contacted';
+      if (!lead.date_first_contacted) {
+        updateData.date_first_contacted = now;
+      }
     }
 
     const { error: updateError } = await supabase
@@ -250,9 +253,11 @@ export async function POST(request: NextRequest) {
     // Log activity
     const { error: activityError } = await supabase.from('lead_activities').insert({
       lead_id,
+      organization_id: lead.organization_id,
       activity_type: 'email_sent',
-      description: `Sent "${emailSubject}" using "${template}" template`,
-      created_at: now,
+      title: `Email sent: ${emailSubject}`,
+      description: `Sent "${template}" template to ${lead.email}`,
+      metadata: { template, subject: emailSubject, message_id: emailResult.messageId },
     });
 
     if (activityError) {
