@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -51,8 +52,10 @@ const PRIORITY_COLORS: Record<OutreachPriority, string> = {
 };
 
 export default function LeadsPage() {
+  const router = useRouter();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [stats, setStats] = useState<LeadStats | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [tierFilter, setTierFilter] = useState('all');
@@ -119,10 +122,22 @@ export default function LeadsPage() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => {
-            const url = `/api/leads?limit=10000&sort=${sortBy}&order=${sortOrder}`;
-            window.open(url, '_blank');
+            const params = new URLSearchParams();
+            if (tierFilter !== 'all') params.set('tier', tierFilter);
+            if (statusFilter !== 'all') params.set('outreach_status', statusFilter);
+            if (search) params.set('search', search);
+            window.open(`/api/leads/export?${params}`, '_blank');
           }}>
-            Export JSON
+            Export CSV
+          </Button>
+          {selectedIds.size > 0 && (
+            <BulkActions
+              selectedIds={Array.from(selectedIds)}
+              onComplete={() => { setSelectedIds(new Set()); fetchLeads(); }}
+            />
+          )}
+          <Button variant="outline" size="sm" onClick={() => router.push('/leads/outreach')}>
+            Outreach
           </Button>
           <Dialog>
             <DialogTrigger>
@@ -164,7 +179,7 @@ export default function LeadsPage() {
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           className="w-64 bg-gray-900 border-gray-700 text-white"
         />
-        <Select value={tierFilter} onValueChange={(v) => { setTierFilter(v); setPage(1); }}>
+        <Select value={tierFilter} onValueChange={(v) => { if (v) { setTierFilter(v); setPage(1); } }}>
           <SelectTrigger className="w-36 bg-gray-900 border-gray-700 text-white">
             <SelectValue placeholder="Tier" />
           </SelectTrigger>
@@ -175,7 +190,7 @@ export default function LeadsPage() {
             <SelectItem value="starter">Starter</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1); }}>
+        <Select value={statusFilter} onValueChange={(v) => { if (v) { setStatusFilter(v); setPage(1); } }}>
           <SelectTrigger className="w-40 bg-gray-900 border-gray-700 text-white">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
@@ -190,7 +205,7 @@ export default function LeadsPage() {
             <SelectItem value="lost">Lost</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={priorityFilter} onValueChange={(v) => { setPriorityFilter(v); setPage(1); }}>
+        <Select value={priorityFilter} onValueChange={(v) => { if (v) { setPriorityFilter(v); setPage(1); } }}>
           <SelectTrigger className="w-36 bg-gray-900 border-gray-700 text-white">
             <SelectValue placeholder="Priority" />
           </SelectTrigger>
@@ -202,7 +217,7 @@ export default function LeadsPage() {
             <SelectItem value="monitor">Monitor</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={sourceFilter} onValueChange={(v) => { setSourceFilter(v); setPage(1); }}>
+        <Select value={sourceFilter} onValueChange={(v) => { if (v) { setSourceFilter(v); setPage(1); } }}>
           <SelectTrigger className="w-40 bg-gray-900 border-gray-700 text-white">
             <SelectValue placeholder="Source" />
           </SelectTrigger>
@@ -224,6 +239,17 @@ export default function LeadsPage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-900/80 border-b border-gray-800">
+              <th className="px-3 py-2 w-8">
+                <input
+                  type="checkbox"
+                  className="rounded bg-gray-800 border-gray-600"
+                  checked={selectedIds.size === leads.length && leads.length > 0}
+                  onChange={(e) => {
+                    if (e.target.checked) setSelectedIds(new Set(leads.map(l => l.id)));
+                    else setSelectedIds(new Set());
+                  }}
+                />
+              </th>
               {[
                 { key: 'company_name', label: 'Company' },
                 { key: 'tier', label: 'Tier' },
@@ -254,16 +280,29 @@ export default function LeadsPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={9} className="text-center py-8 text-gray-500">Loading...</td></tr>
+              <tr><td colSpan={10} className="text-center py-8 text-gray-500">Loading...</td></tr>
             ) : leads.length === 0 ? (
-              <tr><td colSpan={9} className="text-center py-8 text-gray-500">No leads found. Import your first batch!</td></tr>
+              <tr><td colSpan={10} className="text-center py-8 text-gray-500">No leads found. Import your first batch!</td></tr>
             ) : (
               leads.map(lead => (
                 <tr
                   key={lead.id}
                   className="border-b border-gray-800/50 hover:bg-gray-900/50 cursor-pointer"
-                  onClick={() => setSelectedLead(lead)}
+                  onClick={() => router.push(`/leads/${lead.id}`)}
                 >
+                  <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      className="rounded bg-gray-800 border-gray-600"
+                      checked={selectedIds.has(lead.id)}
+                      onChange={(e) => {
+                        const next = new Set(selectedIds);
+                        if (e.target.checked) next.add(lead.id);
+                        else next.delete(lead.id);
+                        setSelectedIds(next);
+                      }}
+                    />
+                  </td>
                   <td className="px-3 py-2">
                     <div className="text-white font-medium">{lead.brand_name || lead.company_name}</div>
                     {lead.brand_name && (
@@ -489,5 +528,47 @@ function ImportForm({ onComplete }: { onComplete: () => void }) {
       </Button>
       {result && <p className="text-green-400 text-sm">{result}</p>}
     </div>
+  );
+}
+
+function BulkActions({ selectedIds, onComplete }: { selectedIds: string[]; onComplete: () => void }) {
+  const [loading, setLoading] = useState(false);
+
+  const handleBulk = async (action: string, value?: string) => {
+    setLoading(true);
+    try {
+      await fetch('/api/leads/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, lead_ids: selectedIds, value }),
+      });
+      onComplete();
+    } catch (err) {
+      console.error('Bulk action failed:', err);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <Select onValueChange={(v: string | null) => {
+      if (!v) return;
+      const [action, value] = v.split(':');
+      handleBulk(action, value);
+    }}>
+      <SelectTrigger className="w-48 bg-gray-900 border-gray-700 text-white">
+        <SelectValue placeholder={`${selectedIds.length} selected — Action`} />
+      </SelectTrigger>
+      <SelectContent className="bg-gray-900 border-gray-700">
+        <SelectItem value="update_status:contacted">Mark Contacted</SelectItem>
+        <SelectItem value="update_status:researching">Mark Researching</SelectItem>
+        <SelectItem value="update_status:not_a_fit">Mark Not a Fit</SelectItem>
+        <SelectItem value="update_priority:tier_1">Set Priority Tier 1</SelectItem>
+        <SelectItem value="update_priority:tier_2">Set Priority Tier 2</SelectItem>
+        <SelectItem value="update_priority:tier_3">Set Priority Tier 3</SelectItem>
+        <SelectItem value="add_tag:hot-lead">Tag: Hot Lead</SelectItem>
+        <SelectItem value="add_tag:needs-research">Tag: Needs Research</SelectItem>
+        <SelectItem value="delete:true">Delete Selected</SelectItem>
+      </SelectContent>
+    </Select>
   );
 }

@@ -8,7 +8,7 @@ import type { Organization } from '@/types/database';
 import type { User } from '@supabase/supabase-js';
 import {
   Home, Building2, CalendarDays, ShoppingBag, Package,
-  Mail, BarChart3, Users, Palette, Settings, LogOut, Menu, X, Target
+  Mail, BarChart3, Users, Palette, Settings, LogOut, Menu, X, Target, Send
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -21,6 +21,7 @@ const navItems = [
   { label: 'Marketing', href: '/marketing', icon: Mail },
   { label: 'Analytics', href: '/analytics', icon: BarChart3 },
   { label: 'Lead Pipeline', href: '/leads', icon: Target },
+  { label: 'Outreach', href: '/leads/outreach', icon: Send },
   { label: 'Providers', href: '/providers', icon: Users },
   { label: 'Branding', href: '/brand', icon: Palette },
   { label: 'Settings', href: '/settings', icon: Settings },
