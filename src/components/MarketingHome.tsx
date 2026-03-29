@@ -13,7 +13,7 @@ export default function MarketingHome() {
             <a href="#features" className="text-sm text-gray-400 hover:text-white transition-colors">Features</a>
             <Link href="/login" className="text-sm text-gray-400 hover:text-white transition-colors">Login</Link>
           </div>
-          <Link href="/signup" className="px-5 py-2 rounded-lg bg-amber-400 text-gray-950 text-sm font-semibold hover:bg-amber-300 transition-all duration-200 shadow-lg hover:shadow-amber-400/25">Get Started Free</Link>
+          <Link href="/signup" className="px-5 py-2 rounded-lg bg-amber-400 text-gray-950 text-sm font-semibold hover:bg-amber-300 transition-all duration-200 shadow-lg hover:shadow-amber-400/25">Book an ROI Audit</Link>
         </div>
       </nav>
 
@@ -22,24 +22,24 @@ export default function MarketingHome() {
         <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(circle at 50% 30%, rgba(251, 191, 36, 0.08) 0%, transparent 60%)' }} />
         <div className="relative max-w-5xl mx-auto text-center">
           <div className="inline-block px-4 py-2 rounded-full border border-amber-400/30 bg-amber-400/10 mb-8">
-            <span className="text-xs text-amber-400 font-semibold uppercase tracking-wider">The Guest Operating System for STR Hosts</span>
+            <span className="text-xs text-amber-400 font-semibold uppercase tracking-wider">The Profit Protection System for Florida Growth Operators</span>
           </div>
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.1] mb-8 text-white">
             Own the Guest Relationship.<br />
-            <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-transparent">Monetize Every Stay.</span>
+            <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-transparent">Protect Your Net Operating Income.</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed">
-            Airbnb hides your guests behind their platform. StaySteward gives you back control — capture real guest data through compliant digital check-in, sell upsells through your own branded storefront, and build direct booking relationships that eliminate OTA commissions forever.
+            OTAs hide your guests. Commissions erode your NOI. And without guest data, you can&apos;t prove ancillary revenue lift to your homeowners. StaySteward gives you back control — capture real guest data through legally compliant digital check-in, monetize every stay through your own branded storefront, and build the direct booking relationships that protect your margins.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
             <Link href="/signup" className="px-8 py-4 rounded-lg bg-amber-400 text-gray-950 font-bold text-base hover:bg-amber-300 transition-all duration-200 shadow-2xl hover:shadow-amber-400/30 w-full sm:w-auto text-center">
-              Start Free — No Credit Card
+              Book an ROI Audit
             </Link>
             <a href="#how-it-works" className="px-8 py-4 rounded-lg border border-gray-700 text-gray-300 font-semibold hover:border-amber-400/50 hover:text-amber-400 transition-all duration-200 w-full sm:w-auto text-center">
-              See How It Works
+              Get Your Custom Revenue Projection
             </a>
           </div>
-          <p className="text-sm text-gray-600">Set up in under 10 minutes. No app download required for guests.</p>
+          <p className="text-sm text-gray-600">App-like guest portal — no download required. Set up in under 10 minutes.</p>
         </div>
       </section>
 
@@ -87,7 +87,7 @@ export default function MarketingHome() {
               <div>
                 <h3 className="text-white font-semibold text-lg mb-2">The 2025 Compliance Problem</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">
-                  Airbnb&apos;s 2025 Off-Platform Policy changed the rules. Legacy digital guidebooks that were introduced as &quot;extra reading&quot; are being flagged and penalized. The only compliant way to capture guest data now is through a <span className="text-amber-400 font-medium">mandatory digital check-in system</span> — one that serves an operational purpose (ID verification, rental agreement, access codes) while also building your guest database. That&apos;s exactly what StaySteward is built to do.
+                  Airbnb&apos;s 2025 Off-Platform Policy changed the rules. Legacy digital guidebooks introduced as &quot;extra reading&quot; are being flagged and penalized. But here&apos;s the legal exception: <span className="text-amber-400 font-medium">Florida Statute Chapter 509</span> requires Transient Public Lodging Establishments to maintain a guest registry with verified identification. StaySteward automates these mandatory guest registry requirements — moving ID verification, rental agreement signing, and legal compliance into a digital-first workflow. You capture 100% of guest data <em>legally</em>, stay protected under Airbnb&apos;s Off-Platform Policy, and satisfy DBPR licensing requirements — all in one check-in flow.
                 </p>
               </div>
             </div>
@@ -122,8 +122,8 @@ export default function MarketingHome() {
                 desc: 'Automated post-stay email sequences handle thank-yous, review requests, win-back offers, and anniversary discounts. Every sequence is designed to drive a direct rebooking — eliminating OTA commissions.',
               },
               {
-                title: 'We Keep You Compliant',
-                desc: 'Digital check-in is introduced as a mandatory operational tool — not optional reading. ID verification, rental agreements, and guest registration all serve a legal purpose, keeping you within Airbnb\'s 2025 Off-Platform Policy.',
+                title: 'We Keep You Legally Protected',
+                desc: 'StaySteward automates the guest registry requirements mandated by Florida Statute Chapter 509. ID verification, rental agreement signing, and guest registration all serve a documented legal purpose — keeping you compliant with DBPR licensing and protected under Airbnb\'s 2025 Off-Platform Policy. Zero risk. Zero gray area.',
               },
             ].map((item) => (
               <div key={item.title} className="rounded-xl border border-gray-800 bg-gray-900/30 p-7 hover:border-amber-400/20 transition-all duration-300">
@@ -208,16 +208,16 @@ export default function MarketingHome() {
                 desc: 'Your logo, your colors, your domain. Guests see your brand — not ours. White-labeled check-in that builds trust and prevents Airbnb from flagging your links.',
               },
               {
-                title: 'Upsell Marketplace',
-                desc: 'Early check-in ($25-$50), late checkout ($25-$50), airport transfers, grocery stocking, private chef, boat tours — create unlimited services. One-click purchase via Stripe.',
+                title: 'Upsell Marketplace — Zero Operational Effort',
+                desc: 'Early check-in ($25-$50), late checkout ($25-$50), airport transfers, grocery stocking, private chef, boat tours — create unlimited services. One-click purchase via Stripe. Fulfillment partners handle the logistics so your team doesn\'t add headcount.',
               },
               {
                 title: 'Automated Email Sequences',
                 desc: 'Pre-arrival welcome, check-in reminder, mid-stay offers, post-stay thank you, review request, win-back campaign, anniversary offer. Set it once, runs forever.',
               },
               {
-                title: 'ID Verification & Compliance',
-                desc: 'Guest identity verification with photo ID upload. Digital rental agreement signing. Fully compliant with Airbnb\'s 2025 Off-Platform Policy and Florida guest registration requirements.',
+                title: 'ID Verification & FL Statute 509 Compliance',
+                desc: 'Guest identity verification with photo ID upload. Digital rental agreement signing. Automates the guest registry requirements mandated by Florida Statute Chapter 509, fully compliant with DBPR licensing and Airbnb\'s 2025 Off-Platform Policy.',
               },
               {
                 title: 'Analytics Dashboard',
@@ -227,12 +227,63 @@ export default function MarketingHome() {
                 title: 'Stripe Connect Payments',
                 desc: 'Apple Pay, Google Pay, credit cards. Guests pay through your portal, money goes straight to your connected Stripe account. Automatic payouts, detailed reporting.',
               },
+              {
+                title: 'Multi-Language Guest Portal',
+                desc: 'Florida hosts millions of international travelers from Latin America, Europe, and beyond. StaySteward automatically detects guest language preferences, ensuring high conversion on upsells and a frictionless check-in experience regardless of where your guests are from.',
+              },
             ].map((feature) => (
               <div key={feature.title} className="rounded-xl border border-gray-800 bg-gray-900/30 p-7 hover:border-amber-400/20 hover:bg-gray-900/50 transition-all duration-300">
                 <h3 className="text-white font-semibold text-base mb-3">{feature.title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{feature.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== HOMEOWNER HERO ===== */}
+      <section className="py-24 px-6 border-t border-gray-800/50 relative">
+        <div className="absolute inset-0 opacity-20" style={{ background: 'radial-gradient(circle at 40% 50%, rgba(251, 191, 36, 0.06) 0%, transparent 50%)' }} />
+        <div className="relative max-w-5xl mx-auto">
+          <div className="sm:flex items-start gap-10">
+            <div className="flex-1 mb-8 sm:mb-0">
+              <p className="text-xs text-amber-400 font-semibold uppercase tracking-wider mb-4">Owner Retention</p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Make Your Homeowners Heroes</h2>
+              <p className="text-gray-400 leading-relaxed mb-6">
+                A property manager&apos;s biggest risk isn&apos;t vacancy — it&apos;s owner churn. When homeowners see you as a 3% co-host commodity, they leave. StaySteward gives you hard data to prove you&apos;re a revenue partner, not just a booking agent.
+              </p>
+              <p className="text-gray-400 leading-relaxed mb-6">
+                Our dashboard generates per-property <span className="text-amber-400 font-medium">Ancillary Revenue Lift</span> reports — showing your owners exactly how much extra profit you&apos;ve generated beyond the nightly rate through upsells, direct rebookings, and commission savings. Give them a number they can&apos;t argue with.
+              </p>
+              <p className="text-gray-400 leading-relaxed">
+                When your owner sees &quot;+$4,200 in ancillary revenue this quarter&quot; on their dashboard, they&apos;re not shopping for a cheaper manager. They&apos;re referring their friends.
+              </p>
+            </div>
+            <div className="flex-shrink-0 sm:w-72">
+              <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-6 space-y-4">
+                <h4 className="text-white font-semibold text-sm uppercase tracking-wider">Owner Dashboard Preview</h4>
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Upsell Revenue</span>
+                    <span className="text-green-400 font-semibold">+$1,840</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Direct Rebooking Savings</span>
+                    <span className="text-green-400 font-semibold">+$1,260</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Guest Support Hours Saved</span>
+                    <span className="text-green-400 font-semibold">+8 hrs</span>
+                  </div>
+                  <div className="pt-3 border-t border-gray-800">
+                    <div className="flex justify-between text-sm font-bold">
+                      <span className="text-white">Ancillary Revenue Lift</span>
+                      <span className="text-amber-400">+$3,100/qtr</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -283,6 +334,21 @@ export default function MarketingHome() {
             <p className="text-lg text-gray-400">Here&apos;s what a 30-property manager can realistically expect.</p>
           </div>
 
+          {/* Industry Benchmarks */}
+          <div className="grid sm:grid-cols-3 gap-6 mb-10">
+            {[
+              { stat: '$36:$1', label: 'Email Marketing ROI', desc: 'Average return on every dollar spent on email marketing in the STR industry.' },
+              { stat: '40%', label: 'Higher Guest LTV', desc: 'Direct booking guests have 40% higher lifetime value and spend 15–30% more per stay than OTA guests.' },
+              { stat: '11-15%', label: 'RevPAR Lift', desc: 'Properties using automated upsells see an average 11–15% increase in Revenue Per Available Rental.' },
+            ].map((item) => (
+              <div key={item.label} className="rounded-xl border border-amber-400/20 bg-amber-400/5 p-6 text-center">
+                <p className="text-3xl font-bold text-amber-400 mb-1">{item.stat}</p>
+                <p className="text-white font-semibold text-sm mb-2">{item.label}</p>
+                <p className="text-xs text-gray-500">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
           <div className="rounded-2xl border border-gray-800 bg-gray-900/30 p-8 sm:p-10">
             <div className="grid sm:grid-cols-2 gap-10">
               <div>
@@ -295,6 +361,10 @@ export default function MarketingHome() {
                   <div className="flex justify-between text-sm border-b border-gray-800/50 pb-3">
                     <span className="text-gray-400">Direct rebookings (save 15% commission)</span>
                     <span className="text-green-400 font-semibold">+$2,700/mo</span>
+                  </div>
+                  <div className="flex justify-between text-sm border-b border-gray-800/50 pb-3">
+                    <span className="text-gray-400">RevPAR lift from automated upsells</span>
+                    <span className="text-green-400 font-semibold">+11-15%</span>
                   </div>
                   <div className="flex justify-between text-sm border-b border-gray-800/50 pb-3">
                     <span className="text-gray-400">Reduced guest support time</span>
@@ -336,8 +406,11 @@ export default function MarketingHome() {
                 <p className="text-gray-400 leading-relaxed mb-6">
                   Florida represents 26% of national short-term rental activity — over $30 billion annually. With DBPR licensing requirements and some of the highest guest volumes in the country, Florida property managers need a platform that understands their market, their compliance requirements, and their guests.
                 </p>
+                <p className="text-gray-400 leading-relaxed mb-6">
+                  StaySteward was built in Florida, for Florida operators. We understand DBPR licensing, local ordinances, and the unique dynamics of every major market.
+                </p>
                 <p className="text-gray-400 leading-relaxed">
-                  StaySteward was built in Florida, for Florida operators. We understand DBPR licensing, local ordinances, and the unique dynamics of markets like Destin/30A, Tampa Bay, Miami Beach, Orlando, and the Keys.
+                  Whether you&apos;re managing luxury beachfront estates in 30A/Destin, high-volume condos near Disney in Osceola County, vacation rentals along the Emerald Coast in Okaloosa, or urban lofts in Miami-Dade and Broward — StaySteward adapts to your local county-specific permits and guest demographics.
                 </p>
               </div>
               <div className="flex-shrink-0 sm:w-64">
@@ -363,19 +436,21 @@ export default function MarketingHome() {
       <section className="py-20 px-6 border-t border-gray-800/50">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-xs text-amber-400 font-semibold uppercase tracking-wider mb-4">Integrations</p>
-          <h2 className="text-3xl font-bold text-white mb-10">Works With Your Existing Stack</h2>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-6">
+          <h2 className="text-3xl font-bold text-white mb-4">Works With Your Existing Stack</h2>
+          <p className="text-gray-500 text-sm mb-10">Partner API access for Guesty, Hostaway, and Lodgify — beta integration available now.</p>
+          <div className="grid grid-cols-3 sm:grid-cols-7 gap-6">
             {[
               { name: 'Stripe', status: 'Live' },
               { name: 'Airbnb', status: 'Live' },
               { name: 'VRBO', status: 'Live' },
-              { name: 'Hostaway', status: 'Coming Soon' },
-              { name: 'Guesty', status: 'Coming Soon' },
+              { name: 'Hostaway', status: 'Beta Access' },
+              { name: 'Guesty', status: 'Beta Access' },
+              { name: 'Lodgify', status: 'Beta Access' },
               { name: 'Resend', status: 'Live' },
             ].map((integration) => (
               <div key={integration.name} className="rounded-lg border border-gray-800 bg-gray-900/30 p-4 hover:border-gray-700 transition-colors">
                 <p className="text-white font-medium text-sm">{integration.name}</p>
-                <p className={`text-xs mt-1 ${integration.status === 'Live' ? 'text-green-400' : 'text-gray-600'}`}>{integration.status}</p>
+                <p className={`text-xs mt-1 ${integration.status === 'Live' ? 'text-green-400' : 'text-amber-400'}`}>{integration.status}</p>
               </div>
             ))}
           </div>
@@ -386,14 +461,14 @@ export default function MarketingHome() {
       <section className="py-28 px-6 border-t border-gray-800/50 relative">
         <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.08) 0%, transparent 50%)' }} />
         <div className="relative max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">Stop Giving Away Your Guest Revenue</h2>
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">Stop Giving Away Your NOI</h2>
           <p className="text-lg text-gray-400 mb-10 max-w-2xl mx-auto">
-            Every day without a guest capture system is another day of lost emails, missed upsells, and repeat guests booking through Airbnb instead of directly with you.
+            Every day without a guest capture system is another day of lost emails, missed upsells, and repeat guests booking through Airbnb instead of directly with you. Your homeowners deserve to see the ancillary revenue you&apos;re leaving on the table.
           </p>
           <Link href="/signup" className="inline-block px-10 py-4 rounded-lg bg-amber-400 text-gray-950 font-bold text-lg hover:bg-amber-300 transition-all duration-200 shadow-2xl hover:shadow-amber-400/30">
-            Get Started Free
+            Book Your Custom ROI Audit
           </Link>
-          <p className="text-sm text-gray-600 mt-4">No credit card required. Set up in under 10 minutes.</p>
+          <p className="text-sm text-gray-600 mt-4">See exactly how much revenue your portfolio is missing. No obligation.</p>
         </div>
       </section>
 
