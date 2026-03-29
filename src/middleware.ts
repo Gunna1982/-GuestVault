@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/providers') ||
     pathname.startsWith('/brand') ||
     pathname.startsWith('/settings') ||
-    pathname === '/';
+    pathname.startsWith('/leads');
 
   // Don't protect portal, auth, marketing, or API routes
   const isPublicRoute = pathname.startsWith('/login') ||
