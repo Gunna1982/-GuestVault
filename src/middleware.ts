@@ -58,7 +58,7 @@ export async function middleware(request: NextRequest) {
   // (Don't redirect /signup — user may need to create their org)
   if (user && pathname === '/login') {
     const url = request.nextUrl.clone();
-    url.pathname = '/';
+    url.pathname = '/properties';
     return NextResponse.redirect(url);
   }
 
