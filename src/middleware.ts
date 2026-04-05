@@ -36,15 +36,16 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/analytics') ||
     pathname.startsWith('/providers') ||
     pathname.startsWith('/brand') ||
-    pathname.startsWith('/settings') ||
-    pathname === '/';
+    pathname.startsWith('/settings');
 
   // Don't protect portal, auth, marketing, or API routes
-  const isPublicRoute = pathname.startsWith('/login') ||
+  const isPublicRoute = pathname === '/' ||
+    pathname.startsWith('/login') ||
     pathname.startsWith('/signup') ||
     pathname.startsWith('/p/') ||
     pathname.startsWith('/pricing') ||
     pathname.startsWith('/blog') ||
+    pathname.startsWith('/marketing') ||
     pathname.startsWith('/api/') ||
     pathname.startsWith('/_next/');
 
