@@ -58,7 +58,7 @@ export default function DashboardShell({
       <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gray-900 border-r border-gray-800 flex flex-col transform transition-transform lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-5 border-b border-gray-800">
           <Link href="/" className="text-lg font-bold tracking-wide text-amber-400">
-            GuestVault
+            StaySteward
           </Link>
           <p className="text-xs text-gray-500 mt-1 truncate">{org.name}</p>
         </div>
@@ -112,7 +112,7 @@ export default function DashboardShell({
           <button onClick={() => setSidebarOpen(true)} className="text-gray-400 cursor-pointer">
             <Menu size={24} />
           </button>
-          <span className="text-amber-400 font-bold">GuestVault</span>
+          <span className="text-amber-400 font-bold">StaySteward</span>
           <div className="w-6" />
         </header>
 

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GuestVault — Guest Experience Platform",
+  title: "StaySteward — Guest Experience Platform",
   description: "Capture guest data, sell upsells, and drive direct bookings for your vacation rental properties.",
 };
 

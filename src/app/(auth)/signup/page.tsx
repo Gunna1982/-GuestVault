@@ -70,7 +70,7 @@ export default function SignupPage() {
     <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-amber-400 tracking-wide">GuestVault</h1>
+          <h1 className="text-2xl font-bold text-amber-400 tracking-wide">StaySteward</h1>
           <p className="text-sm text-gray-500 mt-2">
             {step === 'account' ? 'Create your account' : 'Name your organization'}
           </p>
@@ -121,7 +121,7 @@ export default function SignupPage() {
                 placeholder="e.g., Sunset Villa Rentals"
               />
               <p className="text-xs text-gray-600 mt-1.5">
-                Portal URL: guestvault.com/p/{slugify(orgName) || 'your-company'}
+                Portal URL: staysteward.com/p/{slugify(orgName) || 'your-company'}
               </p>
             </div>
           )}
